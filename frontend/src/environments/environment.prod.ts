@@ -1,5 +1,5 @@
 // src/environments/environment.prod.ts
 export const environment = {
   production: true,
-  apiUrl: '/api'  // Adjust to your production API URL
+  apiUrl: 'https://YOUR_BACKEND_NAME.up.railway.app/api'
 };
