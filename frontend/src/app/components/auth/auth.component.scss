@@ -1,0 +1,12 @@
+// auth.component.scss — styles scoped to auth page only
+// Global styles are in src/styles.scss
+// This file can be used for any auth-specific overrides
+
+.auth-wrap {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,65 @@
+<!-- src/app/components/projects/projects.component.html -->
+<div class="page-title">Projects</div>
+<div class="page-sub">Manage your team's workspaces.</div>
+
+<div style="margin-bottom: 20px">
+  <button *ngIf="auth.isAdmin" class="btn sm" (click)="showNewModal = true">+ New Project</button>
+</div>
+
+<div class="proj-grid">
+  <div *ngFor="let p of projects" class="proj-card" (click)="selectedProject = p">
+    <div class="proj-name">{{ p.name }}</div>
+    <div class="proj-desc">{{ p.description }}</div>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width]="progress(p) + '%'"></div>
+    </div>
+    <div class="proj-footer">
+      <span class="tasks-count">{{ p.doneCount }}/{{ p.taskCount }} tasks</span>
+      <div class="member-avatars">
+        <div *ngFor="let m of p.members" class="avatar xs"
+             [style.background]="m.color + '22'" [style.color]="m.color">
+          {{ initials(m.name) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Project Modal -->
+<div class="overlay" *ngIf="showNewModal" (click)="showNewModal = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-title">New Project</div>
+    <div class="field"><label>Name</label><input [(ngModel)]="form.name" placeholder="My Project" /></div>
+    <div class="field"><label>Description</label><input [(ngModel)]="form.description" placeholder="Brief description" /></div>
+    <div class="modal-actions">
+      <button class="btn sm secondary" (click)="showNewModal = false">Cancel</button>
+      <button class="btn sm" (click)="create()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Project Detail Modal -->
+<div class="overlay" *ngIf="selectedProject" (click)="selectedProject = null">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-title">{{ selectedProject.name }}</div>
+    <div class="text-muted">{{ selectedProject.description }}</div>
+    <div class="divider"></div>
+    <div class="section-title">Tasks ({{ projectTasks(selectedProject).length }})</div>
+    <div *ngFor="let t of projectTasks(selectedProject)" class="task-item mini">
+      <div class="task-title" [class.done]="t.status === 'DONE'">{{ t.title }}</div>
+      <span class="chip" [ngClass]="t.status.toLowerCase().replace('_','-')">{{ t.status }}</span>
+    </div>
+    <div *ngIf="projectTasks(selectedProject).length === 0" class="empty">No tasks yet.</div>
+    <div class="divider"></div>
+    <div class="section-title">Members</div>
+    <div class="member-list">
+      <div *ngFor="let m of selectedProject.members" class="member-mini">
+        <div class="avatar sm" [style.background]="m.color + '22'" [style.color]="m.color">{{ initials(m.name) }}</div>
+        <span>{{ m.name }}</span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn sm secondary" (click)="selectedProject = null">Close</button>
+    </div>
+  </div>
+</div>

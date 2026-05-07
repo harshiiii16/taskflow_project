@@ -1,0 +1,75 @@
+<!-- src/app/components/dashboard/dashboard.component.html -->
+<div *ngIf="loading" class="loading">Loading...</div>
+
+<div *ngIf="!loading">
+  <div class="page-title">Good morning, {{ firstName }} 👋</div>
+  <div class="page-sub">Here's what's happening across your workspace.</div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Projects</div>
+      <div class="stat-val accent">{{ projects.length }}</div>
+      <div class="stat-sub">active workspaces</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">In Progress</div>
+      <div class="stat-val accent2">{{ inProgress.length }}</div>
+      <div class="stat-sub">tasks running</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Completed</div>
+      <div class="stat-val green">{{ done.length }}</div>
+      <div class="stat-sub">tasks done</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Overdue</div>
+      <div class="stat-val danger">{{ overdue.length }}</div>
+      <div class="stat-sub">need attention</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <!-- My Tasks -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">My Tasks</div>
+        <a routerLink="/tasks" class="btn sm secondary">View all</a>
+      </div>
+      <div *ngFor="let t of myTasks.slice(0,5)" class="task-item">
+        <div class="priority-dot" [style.background]="priorityColor(t.priority)"></div>
+        <div class="task-title" [class.done]="t.status === 'DONE'">{{ t.title }}</div>
+        <span class="chip" [ngClass]="statusClass(t.status)">{{ statusLabel(t.status) }}</span>
+      </div>
+      <div *ngIf="myTasks.length === 0" class="empty">No tasks assigned.</div>
+    </div>
+
+    <!-- Projects -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Projects</div>
+        <a routerLink="/projects" class="btn sm secondary">View all</a>
+      </div>
+      <div *ngFor="let p of projects" class="proj-progress">
+        <div class="row">
+          <span class="proj-name">{{ p.name }}</span>
+          <span class="pct">{{ progress(p) }}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width]="progress(p) + '%'"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overdue -->
+  <div *ngIf="overdue.length > 0" class="card overdue-card">
+    <div class="card-header">
+      <div class="card-title danger-text">⚠ Overdue Tasks</div>
+    </div>
+    <div *ngFor="let t of overdue" class="task-item">
+      <div class="priority-dot" [style.background]="priorityColor(t.priority)"></div>
+      <div class="task-title">{{ t.title }}</div>
+      <span class="chip overdue">Overdue</span>
+    </div>
+  </div>
+</div>

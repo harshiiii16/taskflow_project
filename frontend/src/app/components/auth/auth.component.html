@@ -1,0 +1,45 @@
+<!-- src/app/components/auth/auth.component.html -->
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">⬡ TaskFlow</div>
+    <div class="auth-sub">Team collaboration, simplified.</div>
+
+    <div class="auth-tabs">
+      <button [class.active]="tab === 'login'" (click)="tab = 'login'">Sign In</button>
+      <button [class.active]="tab === 'signup'" (click)="tab = 'signup'">Sign Up</button>
+    </div>
+
+    <div *ngIf="error" class="error-msg">{{ error }}</div>
+
+    <div *ngIf="tab === 'signup'" class="field">
+      <label>Full Name</label>
+      <input [(ngModel)]="form.name" placeholder="Alex Morgan" />
+    </div>
+
+    <div class="field">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="form.email" placeholder="you@example.com" />
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <input type="password" [(ngModel)]="form.password" placeholder="••••••••" />
+    </div>
+
+    <div *ngIf="tab === 'signup'" class="field">
+      <label>Role</label>
+      <select [(ngModel)]="form.role">
+        <option>Member</option>
+        <option>Admin</option>
+      </select>
+    </div>
+
+    <button class="btn" (click)="submit()">
+      {{ tab === 'login' ? 'Sign In →' : 'Create Account →' }}
+    </button>
+
+    <div *ngIf="tab === 'login'" class="demo-hint">
+      Demo: admin&#64;demo.com / admin123
+    </div>
+  </div>
+</div>

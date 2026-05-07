@@ -1,0 +1,20 @@
+<!-- src/app/components/team/team.component.html -->
+<div class="page-title">Team</div>
+<div class="page-sub">Manage members and roles.</div>
+
+<div *ngFor="let user of users" class="member-row">
+  <div class="avatar lg" [style.background]="user.color + '22'" [style.color]="user.color">
+    {{ initials(user.name) }}
+  </div>
+  <div class="member-info">
+    <div class="member-name">{{ user.name }}</div>
+    <div class="member-email">{{ user.email }}</div>
+  </div>
+  <span class="chip" [ngClass]="user.role === 'ADMIN' ? 'admin' : 'member'">{{ user.role }}</span>
+  <div *ngIf="user.id !== auth.currentUser?.id" class="member-actions">
+    <button class="btn sm secondary" (click)="toggleRole(user)">
+      {{ user.role === 'ADMIN' ? '→ Member' : '→ Admin' }}
+    </button>
+    <button class="btn sm danger" (click)="remove(user)">Remove</button>
+  </div>
+</div>

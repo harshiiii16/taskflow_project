@@ -1,0 +1,92 @@
+<!-- src/app/components/tasks/tasks.component.html -->
+<div class="page-title">Tasks</div>
+<div class="page-sub">Track and manage all your tasks.</div>
+
+<div class="filters">
+  <div class="filter-btns">
+    <button *ngFor="let f of ['all','TODO','IN_PROGRESS','DONE','overdue']"
+            class="btn sm" [class.secondary]="statusFilter !== f"
+            (click)="statusFilter = f">
+      {{ f === 'IN_PROGRESS' ? 'In Progress' : f === 'all' ? 'All' : f | titlecase }}
+    </button>
+  </div>
+  <select [(ngModel)]="projectFilter">
+    <option value="all">All Projects</option>
+    <option *ngFor="let p of projects" [value]="p.id">{{ p.name }}</option>
+  </select>
+  <button class="btn sm" (click)="openNew()">+ New Task</button>
+</div>
+
+<div *ngIf="filtered.length === 0" class="empty">No tasks found.</div>
+
+<div *ngFor="let task of filtered" class="task-item">
+  <div class="task-check" [class.done]="task.status === 'DONE'" (click)="toggle(task)">
+    <span *ngIf="task.status === 'DONE'">✓</span>
+  </div>
+  <div class="priority-dot" [style.background]="priorityColor(task.priority)"></div>
+  <div class="task-title" [class.done]="task.status === 'DONE'">{{ task.title }}</div>
+  <div class="task-meta">
+    <span *ngIf="isOverdue(task)" class="chip overdue">Overdue</span>
+    <span class="chip" [ngClass]="task.status.toLowerCase().replace('_','-')">
+      {{ statusLabel(task.status) }}
+    </span>
+    <div class="avatar sm" [style.background]="task.assignee.color + '22'" [style.color]="task.assignee.color">
+      {{ task.assignee.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) }}
+    </div>
+    <button *ngIf="auth.isAdmin" class="btn sm secondary" (click)="openEdit(task)">Edit</button>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="overlay" *ngIf="showModal" (click)="showModal = false">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-title">{{ isEdit ? 'Edit Task' : 'New Task' }}</div>
+
+    <div class="field">
+      <label>Title *</label>
+      <input [(ngModel)]="form.title" placeholder="Task title" />
+    </div>
+    <div class="field">
+      <label>Project *</label>
+      <select [(ngModel)]="form.projectId">
+        <option value="">Select project</option>
+        <option *ngFor="let p of projects" [value]="p.id">{{ p.name }}</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Assignee *</label>
+      <select [(ngModel)]="form.assigneeId">
+        <option value="">Select member</option>
+        <option *ngFor="let u of users" [value]="u.id">{{ u.name }}</option>
+      </select>
+    </div>
+    <div class="two-col-sm">
+      <div class="field">
+        <label>Priority</label>
+        <select [(ngModel)]="form.priority">
+          <option value="LOW">Low</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="HIGH">High</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <select [(ngModel)]="form.status">
+          <option value="TODO">To Do</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="DONE">Done</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Due Date</label>
+      <input type="date" [(ngModel)]="form.dueDate" />
+    </div>
+
+    <div class="modal-actions">
+      <button *ngIf="isEdit" class="btn sm danger" (click)="deleteTask()">Delete</button>
+      <button class="btn sm secondary" (click)="showModal = false">Cancel</button>
+      <button class="btn sm" (click)="save()">{{ isEdit ? 'Save' : 'Create' }}</button>
+    </div>
+  </div>
+</div>
